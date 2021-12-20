@@ -1,25 +1,41 @@
-import logo from './logo.svg';
+import react from 'react'
 import './App.css';
+import { connect } from 'react-redux';
+import { getWeather } from "./Actions/Dashboard";
+import PropTypes from 'prop-types';
+import tendies from './Media/tendies.jpg'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+class App extends react.Component {
+
+    static propTypes = {
+        weather: PropTypes.object.isRequired
+    }
+
+    componentDidMount = () => {
+        this.props.getWeather()
+    }
+
+    render() {
+        return (
+            <div className="App">
+                {this.props.weather.main ?
+                    <>
+                        <p>Right Now: {this.props.weather.main.temp}</p>
+                        <p>Today's Min: {this.props.weather.main.temp_min}</p>
+                        <p>Today's Max: {this.props.weather.main.temp_max}</p>
+                    </>
+
+                    : <img src={tendies} alt="tendies" />}
+
+            </div>
+        );
+    }
 }
 
-export default App;
+const mapStateToProps = (state) => ({
+    weather: state.dashboard.weather,
+})
+
+
+export default connect(mapStateToProps, {getWeather})(App);
